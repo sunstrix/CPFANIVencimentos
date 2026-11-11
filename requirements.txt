@@ -1,0 +1,31 @@
+# ============================================================
+# Controle de Vencimentos CP FANI — Dependências
+# Requer Python 3.11+ (Flask-WTF 1.3 exige >=3.10; alvo: 3.12)
+# Pins exatos verificados no PyPI em 11/11/2026.
+# NÃO atualizar versões sem rodar a suíte de testes (tests/).
+# ============================================================
+
+# --- Núcleo web ---
+Flask==3.1.3
+Werkzeug==3.1.9          # base do Flask + werkzeug.security (hash de senhas); pin explícito
+Flask-WTF==1.3.0         # proteção CSRF (login e lançamento)
+Flask-Limiter==4.1.1     # rate limit no login; storage em memória (coerente com 1 worker)
+
+# --- Persistência: Google Sheets ---
+gspread==6.2.1
+google-auth==2.62.2      # autenticação via service account
+requests==2.34.2         # transporte HTTP do gspread; pin explícito (não deixar transitivo)
+
+# --- Exportação ---
+openpyxl==3.1.5          # XLSX (3.2.0b1 é beta — evitado); CSV usa biblioteca padrão
+
+# --- Configuração e fuso horário ---
+python-dotenv==1.2.4     # carrega .env somente em desenvolvimento
+tzdata==2026.6           # OBRIGATÓRIO no Windows: zoneinfo não tem base IANA nativa
+
+# --- Servidores WSGI ---
+gunicorn==26.2.0         # produção (Linux: Koyeb/HF Spaces) — 1 worker, 8 threads
+waitress==3.0.2          # desenvolvimento no Windows (gunicorn não executa em Windows)
+
+# --- Testes (dev; instalado no deploy, porém não usado em runtime) ---
+pytest==9.2.0
