@@ -1,0 +1,59 @@
+# ============================================================
+# Controle de Vencimentos CP FANI — .gitignore
+# Repositório PÚBLICO: nunca commitar segredos, credenciais
+# ou dados operacionais das lojas.
+# ============================================================
+
+# --- Segredos / credenciais (NUNCA commitar) ---
+.env
+.env.*
+!.env.example
+secrets/
+instance/
+service_account*.json
+*credentials*.json
+credenciais*.json
+auth_users*.json
+*.pem
+*.key
+
+# --- Ambiente virtual / artefatos Python ---
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Testes / ferramentas ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Dados locais / exportações (dados das lojas não vão ao repo) ---
+exports/
+*.csv
+*.xlsx
+~$*
+*.db
+*.sqlite3
+*.log
+# Exceção: fixtures de teste são dados fictícios e podem ser versionados
+!tests/fixtures/*.csv
+
+# --- SO / editores ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.bak
+*.tmp
+*~
