@@ -17,6 +17,10 @@ Decisões de negócio refletidas:
   * listar_lancamentos() oculta VENCIDO por padrão (7b).
   * Escrita RAW: texto não é interpretado como fórmula/data pelo Sheets.
 
+Compatibilidade gspread 6.x:
+  * Worksheet.find() retorna Cell | None (a exceção CellNotFound do 5.x
+    não existe mais). Não importar CellNotFound.
+
 Nota de deploy: o lock de escrita é in-process; use 1 worker gunicorn.
 """
 from __future__ import annotations
@@ -29,7 +33,7 @@ import unicodedata
 from typing import Any, Callable
 
 import gspread
-from gspread.exceptions import APIError, CellNotFound
+from gspread.exceptions import APIError
 from gspread.utils import rowcol_to_a1
 from google.oauth2.service_account import Credentials
 from requests.exceptions import ConnectionError as ReqConnectionError
@@ -274,13 +278,11 @@ def upsert_lancamento(lancamento: Lancamento) -> str:
     with _lock_escrita:
         ws = _ws_lancamentos()
         _garantir_cabecalho(ws)
-        try:
-            celula = _com_retry(
-                "localizar lançamento", ws.find, lancamento.id, in_column=1
-            )
-            linha = celula.row
-        except CellNotFound:
-            linha = None
+        # gspread 6.x: find() devolve None quando não encontra (sem exceção).
+        celula = _com_retry(
+            "localizar lançamento", ws.find, lancamento.id, in_column=1
+        )
+        linha = celula.row if celula is not None else None
 
         if linha:
             fim = rowcol_to_a1(linha, NUM_COLUNAS)
